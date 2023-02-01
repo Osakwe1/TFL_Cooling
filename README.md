@@ -5,10 +5,10 @@ This project is a data visualization of transportation average temperature data 
 ## Prerequisites
 You will need to have Python 3 and the following libraries installed:
 
-- Pandas 
-- Matplotlib
-- Seaborn
-- Plotly 
+- Pandas - Data manipulation library
+- Matplotlib - Data visualization library
+- Seaborn - Data visualization library
+- Plotly - Interactive data visualization library
 
 You can install these libraries using pip:
 
@@ -16,11 +16,4 @@ You can install these libraries using pip:
 pip install pandas matplotlib seaborn plotly
 ```
 ## Running the code
-The code for the data analysis & visualization is in the TFL Temperature.ipynb Jupyter Notebook file. You can run the code by opening the notebook and running the cells or viewing in GitHub.
-
-## Built With
-- Python - Programming language
-- Pandas - Data manipulation library
-- Matplotlib - Data visualization library
-- Seaborn - Data visualization library
-- Plotly - Interactive data visualization library
+The code for the data analysis & visualization is in the TFL Temperature.ipynb Jupyter Notebook file. You can run the code by opening the notebook and running the cells.
