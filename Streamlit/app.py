@@ -64,7 +64,7 @@ df_merged=df.merge(weather_grpd.drop(columns=['Year',
 # df_merged
 
 # Main content - Display data and visualizations
-st.title('Transport for London Cooling')
+st.title('The London Underground has a cooling problem')
 
 st.markdown('''Welcome to my analysis of the average monthly temperatures on Transport for London's (TfL) underground trains!
         ''')
