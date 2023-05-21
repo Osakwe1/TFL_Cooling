@@ -13,7 +13,7 @@ You will need to have Python 3 and the following libraries installed:
 You can install these libraries using pip:
 
 ```
-pip install pandas matplotlib seaborn plotly
+pip install -r requirements
 ```
 ## Running the code
 The code for the data analysis & visualization is in the _'TFL Temperature.ipynb'_ Jupyter Notebook file. You can run the code by opening the notebook and running the cells.
