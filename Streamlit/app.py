@@ -165,7 +165,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 correlation_matrix = df_merged.drop(columns=['Year',
                                              'Month',
                                              'max_temp',
-                                             'min_temp']).corr()
+                                             'min_temp']).corr(numeric_only=True)
 plt.figure(figsize=(4, 3))
 sns.heatmap(correlation_matrix, annot=False, cmap='bwr')
 st.pyplot()
