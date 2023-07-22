@@ -4,19 +4,30 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from PIL import Image
+import streamlit as st
+# import streamlit_theme as stt
+
 
 # Set page title
 st.set_page_config(page_title='TfL Cooling Project',
                    layout="wide",
                    page_icon=":lower_left_paintbrush:",
                    menu_items={
-    'Report a bug': "mailto:OOsakwe1@icloud.com?subject=Bug%20found%20in%20Outpainting",
+    'Report a bug': "mailto:OOsakwe1@icloud.com?subject=Bug%20found%20in%TfL%20Cooling%20Project",
     'About': "# Built by Olisa Osakwe."
     })
 
-# Load sample data
-df = pd.read_csv('https://data.london.gov.uk/download/london-underground-average-monthly-temperatures/b01c7853-fff2-4781-9755-9b5e1404d78c/lu-average-monthly-temperatures.csv')
-df.rename(columns={"Sub-surface_lines": "Subsurface_lines"}, inplace=True)
+# Load tfl data
+df1 = pd.read_csv('https://data.london.gov.uk/download/london-underground-average-monthly-temperatures/531e627d-5779-4ae1-bf72-ffa981e13d6e/lu-average-monthly-temperatures_2021-2022%20GLA%20data%20store%20updates.csv')
+df1.drop(columns=['Unnamed: 10', 'Unnamed: 11'], inplace=True)
+df1.rename(columns={"Sub-surface_lines": "Subsurface_lines"}, inplace=True)
+
+df2 = pd.read_csv('https://data.london.gov.uk/download/london-underground-average-monthly-temperatures/b01c7853-fff2-4781-9755-9b5e1404d78c/lu-average-monthly-temperatures.csv')
+df2.rename(columns={"Sub-surface_lines": "Subsurface_lines"}, inplace=True)
+df2 = df2.iloc[:-12]
+
+df = pd.concat([df2,
+                df1], ignore_index=True)
 
 # Creating a column to combine the Month and Year columns
 df["Period"] = df["Month"] + ' ' + df["Year"].astype(str)
@@ -64,22 +75,22 @@ df_merged=df.merge(weather_grpd.drop(columns=['Year',
 # df_merged
 
 # Main content - Display data and visualizations
-st.title('The London Underground has a cooling problem')
+st.title('London has a cooling problem.')
+st.markdown('_Specifically, the <u>London Underground._</u>',  unsafe_allow_html=True)
 
 st.markdown('''Welcome to my analysis of the average monthly temperatures on Transport for London's (TfL) underground trains!
         ''')
 
 st.markdown("We'll be taking a closer look at how temperature affects both our comfort as passengers and the functioning of the trains themselves 🌡️.")
 
+
 # Display updated data
 st.subheader('Temperatures on the London Underground')
-st.dataframe(df)
+st.markdown("Shown below is a chart of the average & maximum monthly temperatures on the London Underground by Line since 2013. [_Data provided by TfL_](https://data.london.gov.uk/dataset/london-underground-average-monthly-temperatures).")
+# st.dataframe(df)
 
 df_byyears_max=df_merged.groupby('Year').max(numeric_only=True).reset_index()
 df_byyears_mean=df_merged.groupby('Year').mean(numeric_only=True).reset_index()
-
-
-df = px.data.gapminder()
 
 fig1 = px.scatter(
     df_byyears_mean,
@@ -106,6 +117,7 @@ fig1 = px.scatter(
                 "variable": "Underground lines"
                },
         trendline='lowess',
+        height=700,
         title='Mean Temperature on TFL Underground lines'
           )
 
@@ -134,27 +146,33 @@ fig2 = px.scatter(
                 "variable": "Underground lines"
                },
         trendline='lowess',
+        height=700,
         title='Max Temperature on TFL Underground lines'
           )
-
 
 tab1, tab2 = st.tabs(["Mean Annual Temperature", "Max Annual Temperature"])
 with tab1:
     # Use the Streamlit theme.
     # This is the default. So you can also omit the theme argument.
-    st.plotly_chart(fig1, theme="streamlit", use_container_width=True)
+    st.plotly_chart(fig1, use_container_width=True)
 with tab2:
     # Use the native Plotly theme.
-    st.plotly_chart(fig2, theme="streamlit", use_container_width=True)
+    st.plotly_chart(fig2, use_container_width=True)
 
 st.subheader('Observations')
 st.markdown('''
-* A reason for the significant drop in avg. temperature in 2020 is likely due to the reduced travel caused by COVID-19 restrictions resulting in less heat on trains.
-* It is likely that changes to climate are impacting the temperatures experienced on trains.
+* A reason for the significant drop in avg. temperature in 2020 is likely due to the reduced travel caused by COVID-19 restrictions resulting in less heat on trains. The Department for Transport found that [travel on the Tube network was only at 81%](https://www.gov.uk/government/statistics/transport-use-during-the-coronavirus-covid-19-pandemic/domestic-transport-usage-by-mode) comapred to the pre-covid baseline as of July 2023.
 * The Subsurface lines (Circle, District, Metropolitan, Hammersmith & City lines) are stocked by the 'S Stock' S7 & S8 trains which are air-conditioned throughout. The subsurface tunnels also allow the exhausted hot air to disperse.
-* It seems that the avg. temperature of the Victoria line is going up by __0.72 degrees__ yearly! This is significantly higher than other deep-level tube lines. There seems to be no sufficient explanation for this. The Victoria line is also one of two lines [to be wholly-underground](https://www.mylondon.news/news/zone-1-news/london-underground-employee-explains-victoria-24708836) (the other being the Waterloo & City line) so one might postulate that trapped heat would have a hard time escaping and sink into the tunnel walls.
+* It seems that the avg. temperature of the Victoria line is going up by __0.87 degrees__ yearly! This is significantly higher than other deep-level tube lines. The Victoria line is also one of two lines [to be wholly-underground](https://www.mylondon.news/news/zone-1-news/london-underground-employee-explains-victoria-24708836) (the other being the Waterloo & City line) so one might postulate that trapped heat would have a hard time escaping and sink into the tunnel walls. As of 2021, the Victoria line overtook the Bakerloo line as the hottest tube line on the TfL network, at an average of **27.6˚C**.
 ''')
-st.markdown('Here is a [map of the TfL network](https://content.tfl.gov.uk/tube-map-with-tunnels.pdf) with all tunnels shown')
+# st.image('data/assets/tube-map-with-tunnels.png')
+# st.markdown('Here is a [map of the TfL network](https://content.tfl.gov.uk/tube-map-with-tunnels.pdf) with all tunnels shown')
+
+# st.markdown("""
+#     <embed src="data/assets/tube-map-with-tunnels-1.png" width="1000" height="800">
+#     """, unsafe_allow_html=True)
+
+# st.components.v1.iframe('data/assets/tube-map-with-tunnels-1.png', width=None, height=None)
 
 st.divider()
 
@@ -172,13 +190,16 @@ st.pyplot()
 
 st.subheader('Observations')
 st.markdown('''
-* The weather factors predictably have particularly poor correlation with the underground temperatures, especially precipitation and cloud cover.
+* The weather factors predictably have particularly *poor* correlation with the underground temperatures, especially precipitation and cloud cover.
 * Sunshine has weak but noticeable correlation but is more indicative of ambient temperature so will not ultimately be useful.
 ''')
 
 st.divider()
 
 st.subheader('How does ambient temperature correspond to tube temperatures? 🚇')
+st.markdown('''
+It would be reasonable to assume the ambient temperature has a significant correlation with the temperature of the tube. Thus, we
+''')
 # Define the data
 y = ["Bakerloo", "Central", "Jubilee", "Northern", "Piccadilly", "Victoria", "Waterloo_and_City", "Subsurface_lines"]
 colors = [(0.701, 0.384, 0.019), (0.890, 0.051, 0.090), (0.627, 0.647, 0.662), (0.0, 0.0, 0.0), (0.0, 0.211, 0.533),
@@ -191,9 +212,9 @@ fig, ax = plt.subplots(nrows=2, ncols=4, sharex=True, sharey=True, figsize=(15, 
 for i in range(8):
     row = i // 4  # Assigns the row of the plots by floor division
     col = i % 4  # Assigns the column of the plots by modulo
-    sns.regplot(df_merged[0:83], x="mean_temp", y=y[i], color=colors[i], ax=ax[row][col])
+    sns.regplot(df_merged, x="mean_temp", y=y[i], color=colors[i], ax=ax[row][col])
     ax[row][col].set_title(
-        y[i] + " Line\n" + "R-squared = " + str(round(df_merged[0:83].corr(numeric_only=True).loc["mean_temp", y[i]] ** 2, 3))
+        y[i] + " Line\n" + "R-squared = " + str(round(df_merged.corr(numeric_only=True).loc["mean_temp", y[i]] ** 2, 3))
     )
 
 # Display the plots in Streamlit
@@ -201,9 +222,9 @@ st.pyplot(fig)
 
 st.markdown('''
 As we can see from the plots, the ambient temperature in London is generally predictive of the temperature on different TfL Underground lines. However, how predictive it is varies for each line.
-* The Subsurface Lines have an R-squared number of 0.976. These lines are fully air-conditioned with [very specific thermostat settings](https://tfl.gov.uk/corporate/transparency/freedom-of-information/foi-request-detail?referenceId=FOI-0659-1920) which would explain the strong correlation.
-* Most lines are generally within **0.75** to **0.95** with variation from the ambient (how much hotter the tube is than ambient) between 2 and 14˚C.
-* The most erratic line is the Victoria line only registering an R-squared number of **0.6**. It has been very challenging to find any data or reasonable explanations for the trends exhibited by the Victoria line data. It has the newest stock of any line besides the Subsurface lines and is equipped with regenerative braking. As of 2019, the line also became the 2nd average hottest line on the Underground network.
+* The Subsurface Lines have an R-squared number of **0.968**. These lines are fully air-conditioned with [very specific thermostat settings](https://tfl.gov.uk/corporate/transparency/freedom-of-information/foi-request-detail?referenceId=FOI-0659-1920) which would explain the strong correlation.
+* Most lines are generally within **0.7** to **0.95** with variation from the ambient (how much hotter the tube is than ambient) between 2 and 14˚C.
+* The most erratic line is the Victoria line only registering an R-squared number of **0.548**. It has been very challenging to find any data or reasonable explanations for the trends exhibited by the Victoria line data. It has the newest stock of any line besides the Subsurface lines and is equipped with regenerative braking. As of 2019, the line also became the 2nd average hottest line on the Underground network.
 * As mentioned earlier, the fact the Victoria line is the only wholly-undergound line could be a factor but without further data or context, it is hard to ascertain what causes this.
 ''')
 
