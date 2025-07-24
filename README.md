@@ -17,5 +17,3 @@ You can install these libraries using pip:
 ```
 pip install -r requirements
 ```
-## Running the code
-The code for the data analysis & visualization is in the _'TFL Temperature.ipynb'_ Jupyter Notebook file. You can run the code by opening the notebook and running the cells.
